@@ -14,11 +14,22 @@ app.use(express.urlencoded({
     extended: true,
 }));
 
+const db = require("./models/index.js");
+db.sequelize.sync({ force: false })
+    .then(() => {
+        console.log("Success sync db!");
+    })
+    .catch((err) => {
+        console.log(`Failed to sync db: ${err.message}`);
+    });
+
 app.get("/", (req, res) => {
     res.json({
         "message": "Welcome to Zenmirai Pretest Backend API",
     });
 });
+
+require("./routes/users.routes.js")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
